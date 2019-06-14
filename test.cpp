@@ -1,8 +1,6 @@
-#include "MemoryPool.h"
+#include "MemoryTool.h"
 
 #include "iostream"
-#include <vector>
-#include <unordered_map>
 
 #ifdef _MSC_VER
 #ifdef _DEBUG
@@ -55,28 +53,26 @@ public:
 
 void test1()
 {
-	MemoryPool m;
-	auto p = m.safeMalloc<int>();
+	auto p = MemoryTool::getInstance()->safeMalloc<int>();
 	*p = 5;
-	m.safeFree(p);
+	MemoryTool::getInstance()->safeFree(p);
 	EXPECT(p, NULL);
 }
 
 void test2()
 {
-	MemoryPool m;
-	auto p = m.safeMalloc<Test>(1, 2.0);
+	auto p = MemoryTool::getInstance()->safeMalloc<Test>(1, 2.0);
 	EXPECT(p->v, 1);
 	EXPECT(p->d, 2.0);
-	m.safeFree(p);
+	MemoryTool::getInstance()->safeFree(p);
 }
 
 void testLarge()
 {
 	MemoryPool m;
-	auto p = m.safeMalloc<TestLarge>(5);
+	auto p = MemoryTool::getInstance()->safeMalloc<TestLarge>(5);
 	EXPECT(p->l1, 5);
-	m.safeFree(p);
+	MemoryTool::getInstance()->safeFree(p);
 }
 
 int main()

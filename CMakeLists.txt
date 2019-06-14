@@ -7,5 +7,6 @@ add_executable(
     test.cpp
     MemoryPool.h
     MemoryPool.cpp
+    MemoryTool.h
 )
 
