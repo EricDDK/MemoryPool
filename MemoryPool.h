@@ -60,9 +60,6 @@ public:
 	MemoryPool();
 	~MemoryPool();
 
-	//template<typename T>
-	
-
 	template<typename T, typename... Args>
 	T* safeMalloc(Args&&... args)
 	{

@@ -40,9 +40,9 @@ public:
 	{
 		l1 = a;
 	}
-	long long l1; long long l2; long long l3; long long l4;
-	long long l5; long long l6; long long l7; long long l8;
-	long long l9; long long l10; long long l11; long long l12;
+	long long l1;  long long l2;  long long l3;  long long l4;
+	long long l5;  long long l6;  long long l7;  long long l8;
+	long long l9;  long long l10; long long l11; long long l12;
 	long long l13; long long l14; long long l15; long long l16;
 	long long l17; long long l18; long long l19; long long l20;
 	long long l21; long long l22; long long l23; long long l24;
@@ -86,7 +86,7 @@ int main()
 	testLarge();
 
 #ifdef _MSC_VER
-	//_CrtDumpMemoryLeaks();
+	_CrtDumpMemoryLeaks();
 	system("pause");
 #else
 
