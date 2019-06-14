@@ -11,7 +11,7 @@ MemoryPool::MemoryPool()
 	{
 		for (j = 0; j < NODE_MAX_SIZE; ++j)
 		{
-			MP_LOG((i + 1) * MEM_ALIGN_FACTOR);
+			//MP_LOG((i + 1) * MEM_ALIGN_FACTOR);
 			void* p = malloc((i + 1) * MEM_ALIGN_FACTOR);
 			_pool[i].insert(_pool[i].begin(), p);
 		}
@@ -30,7 +30,7 @@ MemoryPool::~MemoryPool()
 		}
 		s.clear();
 	}
-	_pool.clear();
+	_pool.~vector();
 }
 
 MEMORY_POOL_NAMESPACE_END
