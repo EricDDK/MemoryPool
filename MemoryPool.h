@@ -60,7 +60,44 @@ public:
 	MemoryPool();
 	~MemoryPool();
 
+	//template<typename T>
+	
 
+	template<typename T, typename... Args>
+	T* safeMalloc(Args&&... args)
+	{
+		register size_t size = sizeof(T);
+		register size_t index = size / 4 + 1;
+		if (size > POOL_MAX_BYTES || _pool[index].empty())
+		{
+			void *pointer = malloc(size);
+			return new(pointer) T(std::forward<Args>(args)...);
+		}
+		else
+		{
+			void *pointer = *(_pool[index].begin());
+			_pool[index].erase(_pool[index].begin());
+			return new(pointer) T(std::forward<Args>(args)...);
+		}
+		return nullptr;
+	}
+
+	template<typename T>
+	void safeFree(T* &t)
+	{
+		register size_t size = sizeof(T);
+		register size_t index = size / 4 + 1;
+		if (size > POOL_MAX_BYTES)
+		{
+			t->~T();
+			delete t;
+		}
+		else
+		{
+			_pool[index].insert(t);
+			t = NULL;
+		}
+	}
 
 private:
 	std::vector<std::unordered_set<void*>> _pool;
