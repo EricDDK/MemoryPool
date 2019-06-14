@@ -75,8 +75,8 @@ public:
 		}
 		else
 		{
-			void *pointer = *(_pool[index].begin());
-			_pool[index].erase(_pool[index].begin());
+			void *pointer = _pool[index].back();
+			_pool[index].pop_back();
 			return new(pointer) T(std::forward<Args>(args)...);
 		}
 		return nullptr;
@@ -94,13 +94,13 @@ public:
 		}
 		else
 		{
-			_pool[index].insert(t);
+			_pool[index].push_back(t);
 			t = NULL;
 		}
 	}
 
 private:
-	std::vector<std::unordered_set<void*>> _pool;
+	std::vector<std::list<void*>> _pool;
 };
 
 MEMORY_POOL_NAMESPACE_END

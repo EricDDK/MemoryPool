@@ -4,7 +4,7 @@
 MEMORY_POOL_NAMESPACE_START
 
 MemoryPool::MemoryPool()
-	:_pool(std::vector<std::unordered_set<void*>>(POOL_MAX_SIZE))
+	:_pool(std::vector<std::list<void*>>(POOL_MAX_SIZE))
 {
 	size_t i, j;
 	for (i = 0; i < POOL_MAX_SIZE; ++i)
@@ -13,7 +13,7 @@ MemoryPool::MemoryPool()
 		{
 			//MP_LOG((i + 1) * MEM_ALIGN_FACTOR);
 			void* p = malloc((i + 1) * MEM_ALIGN_FACTOR);
-			_pool[i].insert(_pool[i].begin(), p);
+			_pool[i].push_back(p);
 		}
 	}
 
