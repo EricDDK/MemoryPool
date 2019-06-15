@@ -63,8 +63,8 @@ public:
 	template<typename T, typename... Args>
 	T* safeMalloc(Args&&... args)
 	{
-		register size_t size = sizeof(T);
-		register size_t index = size / 4 + 1;
+        size_t size = sizeof(T);
+        size_t index = size / 4 + 1;
 		if (size > POOL_MAX_BYTES || _pool[index].empty())
 		{
 			void *pointer = malloc(size);
@@ -82,8 +82,8 @@ public:
 	template<typename T>
 	void safeFree(T* &t)
 	{
-		register size_t size = sizeof(T);
-		register size_t index = size / 4 + 1;
+        size_t size = sizeof(T);
+        size_t index = size / 4 + 1;
 		if (size > POOL_MAX_BYTES)
 		{
 			t->~T();
