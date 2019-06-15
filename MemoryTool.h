@@ -26,8 +26,4 @@ public:
 	}
 };
 
-//#ifndef NEW
-//#include <stdio.h>
-//#define NEW(...) do {return MemoryTool::getInstance()->safeMalloc<TestLarge>(5)} while(0)
-
 #endif
