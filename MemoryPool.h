@@ -28,7 +28,7 @@
 
 #include <assert.h>
 #include <vector>
-#include <unordered_set>
+#include <list>
 #include "stdio.h"
 
 #ifndef MEM_ALIGN_FACTOR
