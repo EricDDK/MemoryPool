@@ -16,14 +16,18 @@ public:
 	template<typename T, typename... Args>
 	T* safeMalloc(Args&&... args)
 	{
-		return pool->safeMalloc(args);
+        return s_pool->safeMalloc<T>(std::forward<Args>(args)...);
 	}
 
 	template<typename T>
 	void safeFree(T* &t)
 	{
-		pool->safeFree(t);
+		s_pool->safeFree(t);
 	}
 };
+
+//#ifndef NEW
+//#include <stdio.h>
+//#define NEW(...) do {return MemoryTool::getInstance()->safeMalloc<TestLarge>(5)} while(0)
 
 #endif

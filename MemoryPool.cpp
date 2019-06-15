@@ -21,16 +21,14 @@ MemoryPool::MemoryPool()
 
 MemoryPool::~MemoryPool()
 {
-	size_t i, j;
 	for (auto& s : _pool)
 	{
-		for (auto &v : s)
+		for (void* v : s)
 		{
 			delete v;
 		}
 		s.clear();
 	}
-	_pool.~vector();
 }
 
 MEMORY_POOL_NAMESPACE_END
