@@ -69,10 +69,26 @@ void test2()
 
 void testLarge()
 {
-	MemoryPool m;
 	auto p = MemoryTool::getInstance()->safeMalloc<TestLarge>(5);
 	EXPECT(p->l1, 5);
 	MemoryTool::getInstance()->safeFree(p);
+}
+
+void testMacro()
+{
+	// no params construct
+	auto p1 = NEW(int);
+	*p1 = 1;
+	EXPECT(*p1, 1);
+	DELET(p1);
+	// multiple params construct
+	auto p2 = NEW(Test, 1, 2.0);
+	EXPECT(p2->v, 1);
+	EXPECT(p2->d, 2.0);
+	DELET(p2);
+	auto p3 = NEW(TestLarge, 5);
+	EXPECT(p3->l1, 5);
+	DELET(p3);
 }
 
 int main()
@@ -80,6 +96,9 @@ int main()
 	test1();
 	test2();
 	testLarge();
+	testMacro();
+
+	delete MemoryTool::getInstance();
 
 #ifdef _MSC_VER
 	_CrtDumpMemoryLeaks();
