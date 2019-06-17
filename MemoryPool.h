@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <vector>
 #include <list>
+#include <mutex>
 #include "stdio.h"
 
 #ifndef MEM_ALIGN_FACTOR
@@ -65,8 +66,10 @@ public:
 	{
         size_t size = sizeof(T);
         size_t index = size / 4 + 1;
+		_mtx.lock();
 		if (size > POOL_MAX_BYTES || _pool[index].empty())
 		{
+			_mtx.unlock();
 			void *pointer = malloc(size);
 			return new(pointer) T(std::forward<Args>(args)...);
 		}
@@ -74,6 +77,7 @@ public:
 		{
 			void *pointer = _pool[index].back();
 			_pool[index].pop_back();
+			_mtx.unlock();
 			return new(pointer) T(std::forward<Args>(args)...);
 		}
 		return nullptr;
@@ -91,13 +95,16 @@ public:
 		}
 		else
 		{
+			_mtx.lock();
 			_pool[index].push_back(t);
+			_mtx.unlock();
 			t = NULL;
 		}
 	}
 
 private:
 	std::vector<std::list<void*>> _pool;
+	std::mutex _mtx;
 };
 
 MEMORY_POOL_NAMESPACE_END

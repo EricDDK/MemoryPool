@@ -21,6 +21,7 @@ MemoryPool::MemoryPool()
 
 MemoryPool::~MemoryPool()
 {
+	_mtx.lock();
 	for (auto& s : _pool)
 	{
 		for (void* v : s)
@@ -29,6 +30,7 @@ MemoryPool::~MemoryPool()
 		}
 		s.clear();
 	}
+	_mtx.unlock();
 }
 
 MEMORY_POOL_NAMESPACE_END
