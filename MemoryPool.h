@@ -80,7 +80,6 @@ public:
 			_mtx.unlock();
 			return new(pointer) T(std::forward<Args>(args)...);
 		}
-		return nullptr;
 	}
 
 	template<typename T>
