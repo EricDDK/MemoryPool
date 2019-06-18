@@ -20,18 +20,6 @@ public:
 	{
 		return s_pool;
 	}
-
-	template<typename T, typename... Args>
-	T* safeMalloc(Args&&... args)
-	{
-        return s_pool->safeMalloc<T>(std::forward<Args>(args)...);
-	}
-
-	template<typename T>
-	void safeFree(T* &t)
-	{
-		s_pool->safeFree(t);
-	}
 };
 
 #endif
