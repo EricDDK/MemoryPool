@@ -34,7 +34,7 @@
 
 #ifndef MEM_ALIGN_FACTOR
 #if OS_64BIT
-#define MEM_ALIGN_FACTOR 8
+#define MEM_ALIGN_FACTOR 4
 #else
 #define MEM_ALIGN_FACTOR 4
 #endif // OS_64BIT
@@ -65,7 +65,7 @@ public:
 	T* safeMalloc(Args&&... args)
 	{
         size_t size = sizeof(T);
-        size_t index = size / 4 + 1;
+        size_t index = size / 4 - 1;
 		_mtx.lock();
 		if (size > POOL_MAX_BYTES || _pool[index].empty())
 		{
@@ -86,7 +86,7 @@ public:
 	void safeFree(T* &t)
 	{
         size_t size = sizeof(T);
-        size_t index = size / 4 + 1;
+        size_t index = size / 4 - 1;
 		if (size > POOL_MAX_BYTES)
 		{
 			t->~T();
@@ -99,6 +99,14 @@ public:
 			_mtx.unlock();
 			t = NULL;
 		}
+	}
+
+	void gc();
+
+	// test function
+	const size_t getPoolColSize(int index)
+	{
+		return _pool[index].size();
 	}
 
 private:
