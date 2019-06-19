@@ -91,12 +91,27 @@ void testMacro()
 	DELET(p3);
 }
 
+void testGC()
+{
+	size_t i;
+	for (i = 0; i < 128; ++i)
+	{
+		int *p = new int;
+		*p = 65535;
+		DELET(p);
+	}
+	EXPECT(MemoryTool::getInstance()->getPoolColSize(0), i + NODE_MAX_SIZE);
+	MemoryTool::getInstance()->gc();
+	EXPECT(MemoryTool::getInstance()->getPoolColSize(0), NODE_MAX_SIZE);
+}
+
 int main()
 {
 	test1();
 	test2();
 	testLarge();
 	testMacro();
+	testGC();
 
 	delete MemoryTool::getInstance();
 

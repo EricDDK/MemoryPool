@@ -33,4 +33,20 @@ MemoryPool::~MemoryPool()
 	_mtx.unlock();
 }
 
+void MemoryPool::gc()
+{
+	_mtx.lock();
+	for (auto& s : _pool)
+	{
+		size_t size = s.size();
+		while (size-- > NODE_MAX_SIZE)
+		{
+			void *p = s.back();
+			s.pop_back();
+			delete(p);
+		}
+	}
+	_mtx.unlock();
+}
+
 MEMORY_POOL_NAMESPACE_END
