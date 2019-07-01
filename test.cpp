@@ -105,6 +105,51 @@ void testGC()
 	EXPECT(MemoryTool::getInstance()->getPoolColSize(0), NODE_MAX_SIZE);
 }
 
+#ifdef _MSC_VER
+void testEffect()
+{
+#include <time.h>
+	size_t i;
+	clock_t start, end;
+	start = clock();
+	for (i = 0; i < 10000; ++i)
+	{
+		{
+			auto p = MemoryTool::getInstance()->safeMalloc<int>();
+			*p = 5;
+			MemoryTool::getInstance()->safeFree(p);
+		}
+		{
+			auto q = MemoryTool::getInstance()->safeMalloc<TestLarge>(5);
+			MemoryTool::getInstance()->safeFree(q);
+		}
+	}
+	end = clock();
+	auto diff1 = end - start;
+	std::cout << start << " - " << end << std::endl;
+	start = clock();
+	for (i = 0; i < 10000; ++i)
+	{
+		{
+			int *p = new int;
+			*p = 5;
+			delete p;
+		}
+		{
+			TestLarge *q = new TestLarge(5);
+			delete q;
+		}
+	}
+	end = clock();
+	std::cout << start << " - " << end << std::endl;
+	auto diff2 = end - start;
+	if (diff1 >= diff2)
+	{
+		EXPECT(1, 2);
+	}
+}
+#endif
+
 int main()
 {
 	test1();
@@ -112,6 +157,9 @@ int main()
 	testLarge();
 	testMacro();
 	testGC();
+#ifdef _MSC_VER
+	testEffect();
+#endif
 
 	delete MemoryTool::getInstance();
 
