@@ -75,6 +75,8 @@ public:
 		}
 		else
 		{
+			if (_pool[index].empty())
+				return new T(std::forward<Args>(args)...);
 			void *pointer = _pool[index].back();
 			_pool[index].pop_back();
 			_mtx.unlock();
