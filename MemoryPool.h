@@ -28,7 +28,7 @@
 
 #include <assert.h>
 #include <vector>
-#include <list>
+#include <stack>
 #include <mutex>
 #include "stdio.h"
 
@@ -77,8 +77,8 @@ public:
 		{
 			if (_pool[index].empty())
 				return new T(std::forward<Args>(args)...);
-			void *pointer = _pool[index].back();
-			_pool[index].pop_back();
+			void *pointer = _pool[index].top();
+			_pool[index].pop();
 			_mtx.unlock();
 			return new(pointer) T(std::forward<Args>(args)...);
 		}
@@ -97,7 +97,7 @@ public:
 		else
 		{
 			_mtx.lock();
-			_pool[index].push_back(t);
+			_pool[index].push(t);
 			_mtx.unlock();
 			t = NULL;
 		}
@@ -112,7 +112,7 @@ public:
 	}
 
 private:
-	std::vector<std::list<void*>> _pool;
+	std::vector<std::stack<void*>> _pool;
 	std::mutex _mtx;
 };
 
