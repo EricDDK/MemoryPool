@@ -106,9 +106,9 @@ void testGC()
 }
 
 #ifdef _MSC_VER
+#include <time.h>
 void testEffect()
 {
-#include <time.h>
 	size_t i;
 	clock_t start, end;
 	start = clock();
@@ -148,6 +148,45 @@ void testEffect()
 		EXPECT(1, 2);
 	}
 }
+
+void testMallocPerformance()
+{
+	clock_t start, end;
+	start = clock();
+	size_t i;
+	for (i = 0; i < 10000; ++i)
+	{
+		{
+			auto p = MemoryTool::getInstance()->safeMalloc<int>();
+			*p = 5;
+		}
+		{
+			auto q = MemoryTool::getInstance()->safeMalloc<TestLarge>(5);
+		}
+	}
+	end = clock();
+	auto diff1 = end - start;
+	std::cout << start << " - " << end << std::endl;
+	start = clock();
+	for (i = 0; i < 10000; ++i)
+	{
+		{
+			int *p = new int;
+			*p = 5;
+		}
+		{
+			TestLarge *q = new TestLarge(5);
+			q->l11 = 15;
+		}
+	}
+	end = clock();
+	std::cout << start << " - " << end << std::endl;
+	auto diff2 = end - start;
+	if (diff1 >= diff2)
+	{
+		EXPECT(1, 2);
+	}
+}
 #endif
 
 int main()
@@ -159,6 +198,7 @@ int main()
 	testGC();
 #ifdef _MSC_VER
 	testEffect();
+	testMallocPerformance();
 #endif
 
 	delete MemoryTool::getInstance();

@@ -4,7 +4,7 @@
 MEMORY_POOL_NAMESPACE_START
 
 MemoryPool::MemoryPool()
-	:_pool(std::vector<std::list<void*>>(POOL_MAX_SIZE))
+	:_pool(std::vector<std::stack<void*>>(POOL_MAX_SIZE))
 {
 	size_t i, j;
 	for (i = 0; i < POOL_MAX_SIZE; ++i)
@@ -13,7 +13,7 @@ MemoryPool::MemoryPool()
 		{
 			//MP_LOG((i + 1) * MEM_ALIGN_FACTOR);
 			void* p = malloc((i + 1) * MEM_ALIGN_FACTOR);
-			_pool[i].push_back(p);
+			_pool[i].push(p);
 		}
 	}
 
@@ -24,11 +24,12 @@ MemoryPool::~MemoryPool()
 	_mtx.lock();
 	for (auto& s : _pool)
 	{
-		for (void* v : s)
+		while (!s.empty())
 		{
+			auto v = s.top();
+			s.pop();
 			delete v;
 		}
-		s.clear();
 	}
 	_mtx.unlock();
 }
@@ -41,8 +42,8 @@ void MemoryPool::gc()
 		size_t size = s.size();
 		while (size-- > NODE_MAX_SIZE)
 		{
-			void *p = s.back();
-			s.pop_back();
+			void *p = s.top();
+			s.pop();
 			delete(p);
 		}
 	}
